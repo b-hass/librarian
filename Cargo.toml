@@ -1,0 +1,6 @@
+[package]
+name = "librarian"
+version = "0.1.0"
+authors = ["Bruno Hass <bruno_hass@live.com>"]
+
+[dependencies]
