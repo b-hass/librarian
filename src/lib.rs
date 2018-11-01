@@ -23,7 +23,7 @@ mod tests {
     fn kmp_computation() {
         let text = 
 "To see a World in a Grain of Sand. 
-And a Heaven in a Wild Flower. 
+And a Heaven in a Wild Flower.
 Hold Infinity in the palm of your hand. And Eternity in an hour. ";
         assert_eq!(
             vec!("And a Heaven in a Wild Flower."),
@@ -65,16 +65,17 @@ fn compute_pi_table(pattern: &str) -> Vec<usize> {
 pub fn kmp<'a>(pattern: &str, text: &'a str) -> Vec<&'a str> {
     let pi_table = compute_pi_table(pattern);
     let mut pi_table_index: usize = 0;
-    let pattern_bytes = (*pattern).as_bytes();
+    let patterns_bytes = (*pattern).as_bytes();
 
     let mut result = Vec::new();
     
     for line in text.lines() {
         for &c in line.as_bytes() {
-            if c == pattern_bytes[pi_table_index] as u8 {
+            if c == patterns_bytes[pi_table_index] as u8 {
                 pi_table_index += 1;
-                if pi_table_index == pi_table.len() {
+                if pi_table_index >= pi_table.len() - 1 {
                     result.push(line);
+                    break;
                 }
             } else {
                 if pi_table_index == 0 {
