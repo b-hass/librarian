@@ -1,5 +1,6 @@
 use std::fs;
 use std::error::Error;
+use std::env;
 
 #[cfg(test)]
 mod tests {
@@ -30,6 +31,11 @@ Hold Infinity in the palm of your hand. And Eternity in an hour. ";
             vec!("And a Heaven in a Wild Flower."),
             search_kmp("Heaven", text)
         );
+    }
+
+    #[test]
+    fn directory_listing() {
+       // let path = env::args[0];
     }
 
 }
@@ -78,9 +84,9 @@ fn compute_pi_table(pattern: &str) -> Vec<usize> {
                 j += 1;
             }
             pi_table.push(j);
-            
         }
     }
+
     return pi_table;
 }
 
@@ -103,22 +109,35 @@ fn kmp<'a>(pattern: &str, pi_table: &Vec<usize>, text: &'a str) -> bool {
         }
     }
     
-    false
+    return false;
 }
 
 pub fn search_kmp<'a>(pattern: &str, text: &'a str) -> Vec<&'a str> {
-    let mut result = Vec::new();
     let pi_table = compute_pi_table(pattern);
 
-    for line in text.lines() {
-        if kmp(pattern, &pi_table, line) {
-            result.push(line);
-        }
-    }
-
-    return result;
+    text.lines()
+        .filter(|line| kmp(pattern, &pi_table, line))
+        .collect()
 }
 
 pub fn read_file(file_name: &str) -> String {
     fs::read_to_string(file_name).expect("FILE_NOT_FOUND")
+}
+
+pub fn list_files(root: &str) -> Vec<String> {
+    let mut results = Vec::new();
+    let root_entries = fs::read_dir(root).expect("Directory not found");
+    let paths: Vec<std::path::PathBuf> = root_entries.filter(|entry| entry.is_ok())
+        .map(|entry| entry.unwrap().path())
+        .collect();
+
+    for path in paths {
+        if path.is_dir() {
+            results.append(&mut list_files(path.to_str().unwrap()));
+        } else {
+            results.push(String::from(path.to_str().unwrap()));
+        }
+    }
+    
+    results    
 }
