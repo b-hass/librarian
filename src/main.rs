@@ -7,8 +7,6 @@ use librarian::Config;
 
 
 fn main() {
-    librarian::list_files("/home/bhass/Desktop");
-    
     let args: Vec<String> = env::args().collect();
     let config = Config::new(&args).unwrap_or_else(|err| {
         eprintln!("Problem parsing arguments: {}", err);
